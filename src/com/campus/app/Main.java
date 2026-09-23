@@ -58,6 +58,25 @@ public class Main {
         Student.StudentCard card = student.new StudentCard();
         card.displayStudentCard();
 
+        // Member Inner Class: ExamResult (previously unused)
+        Student.ExamResult examResult = student.new ExamResult();
+        examResult.displayExamResult();
+
+        // Anonymous Inner Class implementing StudentOperations
+        StudentOperations specialOperations = new StudentOperations() {
+            @Override
+            public void generateReport() {
+                System.out.println("Special Operations Report (Anonymous Class)");
+            }
+
+            @Override
+            public boolean isEligibleForScholarship() {
+                return false;
+            }
+        };
+        specialOperations.generateReport();
+        System.out.println("Is Eligible for Scholarship (Special): " + specialOperations.isEligibleForScholarship());
+
         System.out.println("Students Created: " + Student.getTotalStudents());
 
         sc.close();
