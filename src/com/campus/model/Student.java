@@ -128,7 +128,8 @@ public abstract class Student {
     public class ExamResult {
         
         public void displayExamResult() {
-            displayStudentInfo(true);
+            System.out.println("--- Exam Result ---");
+            displayMarks();
         }
     }
 }

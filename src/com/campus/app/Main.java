@@ -43,39 +43,35 @@ public class Main {
 
         student.displayStudentInfo();
 
-        student.displayStudentInfo(true);
-
         StudentService.displayResult(student);
 
         System.out.println("Student Type: " + student.getStudentType());
 
         StudentOperations operations = (StudentOperations) student;
         operations.generateReport();
-
         System.out.println("Is Eligible for Scholarship: " + operations.isEligibleForScholarship());
 
-        
+        // Member Inner Classes
         Student.StudentCard card = student.new StudentCard();
         card.displayStudentCard();
 
-        // Member Inner Class: ExamResult (previously unused)
         Student.ExamResult examResult = student.new ExamResult();
         examResult.displayExamResult();
 
-        // Anonymous Inner Class implementing StudentOperations
+        // Anonymous Inner Class implementing StudentOperations (Special Quota)
         StudentOperations specialOperations = new StudentOperations() {
             @Override
             public void generateReport() {
-                System.out.println("Special Operations Report (Anonymous Class)");
+                System.out.println("Special Quota Criteria: Minimum 75% average marks");
             }
 
             @Override
             public boolean isEligibleForScholarship() {
-                return false;
+                return StudentService.calculateAverageMarks(student) >= 75;
             }
         };
         specialOperations.generateReport();
-        System.out.println("Is Eligible for Scholarship (Special): " + specialOperations.isEligibleForScholarship());
+        System.out.println("Is Eligible for Scholarship (Special Quota): " + specialOperations.isEligibleForScholarship());
 
         System.out.println("Students Created: " + Student.getTotalStudents());
 
