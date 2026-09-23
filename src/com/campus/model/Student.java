@@ -1,6 +1,7 @@
 package com.campus.model;
 
-public class Student {
+
+public abstract class Student {
 
     // Instance variables
     private int studentId;
@@ -105,9 +106,29 @@ public class Student {
             System.out.println("No marks available");
         }
     }
+    // Abstract methods
+    public  abstract String getStudentType();
+    
 
     // Static method
     public static int getTotalStudents() {
         return totalStudents;
+    }
+
+    // Inner classes
+    public class StudentCard {
+        public void displayStudentCard() {
+            System.out.println("--- Student Card ---");
+            System.out.println("Student ID: " + studentId);
+            System.out.println("Name: " + name);
+            System.out.println("Department: " + department);
+        }
+    }
+
+    public class ExamResult {
+        
+        public void displayExamResult() {
+            displayStudentInfo(true);
+        }
     }
 }
