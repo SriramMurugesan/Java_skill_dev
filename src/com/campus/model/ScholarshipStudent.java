@@ -1,8 +1,8 @@
 package com.campus.model;
 
 import com.campus.service.StudentService;
-import com.campus.contract.StudentOperations;
-public class ScholarshipStudent extends Student implements StudentOperations {
+
+public class ScholarshipStudent extends Student {
     
     private double scholarshipPercentage;
 
@@ -41,5 +41,4 @@ public class ScholarshipStudent extends Student implements StudentOperations {
     public String getStudentType() {
         return "Scholarship Student";
     }   
-    
 }

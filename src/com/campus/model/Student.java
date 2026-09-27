@@ -1,7 +1,8 @@
 package com.campus.model;
 
+import com.campus.contract.StudentOperations;
 
-public abstract class Student {
+public abstract class Student implements StudentOperations {
 
     // Instance variables
     private int studentId;
@@ -108,6 +109,7 @@ public abstract class Student {
     }
     // Abstract methods
     public  abstract String getStudentType();
+    
     
 
     // Static method
