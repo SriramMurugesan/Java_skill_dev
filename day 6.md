@@ -11,9 +11,9 @@ mvn jetty:run
 ```
 
 ### Breakdown of the Run Command:
-- **`mvn`** &rarr; Runs the Apache Maven tool.
+- **`mvn`** &rarr; Runs the Apache Maven build tool.
 - **`jetty`** &rarr; Calls the embedded Jetty Web Server plugin configured in `pom.xml`.
-- **`:run`** &rarr; Tells Jetty to compile your Java code, load web files, and start the server immediately.
+- **`:run`** &rarr; Tells Jetty to compile your Java code, load web files, and start the server immediately on port `8080`.
 
 ### Once the command runs:
 Open your browser and visit:
@@ -24,14 +24,41 @@ Open your browser and visit:
 
 ---
 
-## 2. What is a Servlet? (For Absolute Beginners)
+## 2. Why Do We Need Servlets?
+
+Before learning how Servlets work, let's understand **why** they exist:
+
+### 1. Why Not Just Plain HTML & CSS?
+- HTML & CSS are **static**. They only display fixed text and designs.
+- HTML **cannot**:
+  - Connect to a database.
+  - Dynamically store student records in memory or files.
+  - Perform calculations (like calculating GPA or pass/fail).
+  - Authenticate logins or process business rules.
+
+### 2. Why Not Regular Java (`public static void main`)?
+- A standard Java console program only runs in a terminal window, prints output using `System.out.println()`, and terminates.
+- It **cannot** listen for network requests from web browsers (Chrome, Edge, Firefox).
+
+### 3. The Solution: Servlets
+A **Servlet** bridges the gap between Java and the Web:
+- It runs inside a Web Server.
+- It listens on a URL (like `/students`).
+- When a user clicks a button in their browser, the Servlet receives the data, executes Java business logic, and sends back dynamic HTML!
+
+> 💡 **Did you know?**  
+> Even modern frameworks like **Spring Boot**, **Spring MVC**, and **REST APIs** are built on top of Servlets (`DispatcherServlet`) under the hood!
+
+---
+
+## 3. What is a Servlet? (For Absolute Beginners)
 
 ### Real-World Analogy: The Restaurant
-Think of a website like a restaurant:
+Think of a web application like a restaurant:
 1. **You (Browser/Client):** Sits at the table and places an order.
 2. **The Waiter (Servlet):** 
-   - Takes your order (**Request**).
-   - Goes to the kitchen to fetch or prepare data (**Service/Database**).
+   - Takes your order (**HTTP Request**).
+   - Walks to the kitchen to fetch or prepare data (**Service/Database**).
    - Brings back the prepared dish on a plate (**HTML Response**).
 3. **The Kitchen (Service layer):** Prepares the food / manages the data.
 
@@ -42,23 +69,53 @@ Think of a website like a restaurant:
 +----------+          3. HTML Response             +----------------+      Data Returned        +------------------+
 ```
 
-A **Servlet** is simply a Java class that listens for web requests over the internet (HTTP), runs Java logic, and sends back an HTML page or data to the user's browser.
+A **Servlet** is a Java class that receives HTTP requests from a client (browser), runs backend logic, and returns a response.
 
 ---
 
-## 3. GET vs POST: The Two Main HTTP Methods
+## 4. What is Jakarta? (`javax` vs `jakarta`)
+
+When writing Servlets, you will see imports like:
+```java
+import jakarta.servlet.http.HttpServlet;
+import jakarta.servlet.annotation.WebServlet;
+```
+
+### The Story Behind Jakarta:
+1. **The Origin (Java EE):**  
+   Sun Microsystems created **J2EE** (later renamed **Java EE** - *Java Enterprise Edition*). All packages started with `javax.*` (e.g., `javax.servlet.*`).
+2. **The Transfer to Open Source (2017):**  
+   Oracle owned Java EE and decided to donate the entire enterprise platform to the open-source **Eclipse Foundation**.
+3. **The Trademark Issue:**  
+   Oracle kept the legal rights to the trademark name **"Java"**. Therefore, the Eclipse Foundation was not legally allowed to use `javax` for new specifications.
+4. **The Rebranding to "Jakarta EE":**  
+   The platform was renamed to **Jakarta EE**. Starting from Jakarta EE 9 and 10, all package names changed from:
+   - `javax.servlet.*` &rarr; **`jakarta.servlet.*`**
+
+### Quick Comparison:
+
+| Package | Platform | Era | Used In |
+| :--- | :--- | :--- | :--- |
+| `javax.servlet.*` | Java EE 8 & older | Legacy | Tomcat 9, Spring Boot 2 |
+| `jakarta.servlet.*` | Jakarta EE 9 / 10 | **Modern Standard** | **Tomcat 10+, Spring Boot 3+, Jetty 12** |
+
+> In this project, we use `jakarta.servlet-api:6.0.0` (Jakarta EE 10), which is the current industry standard.
+
+---
+
+## 5. GET vs POST: The Two Main HTTP Methods
 
 | Feature | HTTP GET | HTTP POST |
 | :--- | :--- | :--- |
 | **Purpose** | **Fetch / Read data** from server | **Send / Submit data** to server |
 | **Real-Time Example** | Asking the waiter: *"Show me the menu"* | Handing the waiter: *"Here is my order form"* |
-| **Data Visibility** | Parameters are visible in the URL bar | Data is hidden inside the request body |
+| **Data Visibility** | Parameters are visible in the URL bar | Data is securely sent inside the request body |
 | **In our App** | Visiting `/students` to view the student list | Submitting `student.html` form to save a student |
 | **Servlet Method** | `protected void doGet(...)` | `protected void doPost(...)` |
 
 ---
 
-## 4. Deep Dive: Code Explanation of the Main Servlet
+## 6. Deep Dive: Code Explanation of the Main Servlet
 
 File: `src/main/java/com/campus/controller/StudentServlet.java`
 
@@ -139,30 +196,29 @@ public class StudentServlet extends HttpServlet {
 ### Key Components Explained:
 1. **`@WebServlet("/students")`**
    - Maps this Servlet to the URL path `/students`.
-   - When anyone types `http://localhost:8080/students`, this class is executed.
+   - When anyone visits `http://localhost:8080/students`, this class handles the request.
 2. **`extends HttpServlet`**
-   - Inherits Java's built-in web capabilities from Jakarta Servlet API.
+   - Gives our class full HTTP web server capabilities.
 3. **`doGet(HttpServletRequest request, HttpServletResponse response)`**
    - Runs whenever someone visits the page or clicks a link pointing to `/students`.
-   - `request`: Contains information sent by the user (cookies, headers, query parameters).
-   - `response`: What we send back to the user (HTML content).
+   - `request`: Contains information sent by the user.
+   - `response`: Contains what we send back to the user (HTML content).
 4. **`doPost(HttpServletRequest request, HttpServletResponse response)`**
-   - Runs when the `<form method="post" action="students">` in `student.html` is submitted.
+   - Runs when `<form method="post" action="students">` in `student.html` is submitted.
    - `request.getParameter("name")`: Reads whatever text the user typed into the input field `<input name="name">`.
    - `response.sendRedirect("students")`: After adding the student, tells the browser to reload `/students` so the updated list is shown immediately.
 
 ---
 
-## 5. What is Maven? (Simple Explanation)
+## 7. What is Maven? (Simple Explanation)
 
-### Real-World Analogy: The Smart Construction Manager
-Imagine building a house:
-- **Without Maven (Manual Java):** You must personally go to every factory, buy bricks, nails, cement, carry them by hand, figure out matching versions, and compile everything using long terminal commands.
-- **With Maven:** You write a list in a single file called `pom.xml`: *"I need Jakarta Servlet 6.0 and a web server"*. Maven automatically goes to the internet repository (Maven Central), downloads the exact right `.jar` files, sets up folders, compiles your code, and runs your project.
+### Real-World Analogy: The Construction Manager
+- **Without Maven (Manual Java):** You must manually find, download, and copy external `.jar` files, configure classpaths, and run complex terminal commands.
+- **With Maven:** You declare what you need in one file called `pom.xml`: *"I need Jakarta Servlet 6.0 and an embedded web server"*. Maven automatically downloads the exact right libraries from Maven Central, organizes folders, compiles your code, and runs your app.
 
 ### Core Responsibilities of Maven:
 1. **Dependency Management:** Automatically downloads external Java libraries (`jakarta.servlet-api`, etc.).
-2. **Standard Folder Structure:** Organizes your code so every developer knows where files live.
+2. **Standard Folder Structure:** Organizes your code predictably.
 3. **Build Automation:** One command (`mvn clean package`) compiles code, runs tests, and packages it into a `.war` file.
 
 ### Standard Maven Web Project Structure:
@@ -182,51 +238,28 @@ Java_skill_dev/
 
 ---
 
-## 6. How to Initiate a Maven Project
-
-There are two common ways to start a Maven project:
-
-### Method 1: Using the Maven Command Line (Archetype)
-```bash
-mvn archetype:generate -DgroupId=com.campus -DartifactId=campus-student-management -DarchetypeArtifactId=maven-archetype-webapp -DinteractiveMode=false
-```
-This automatically creates the standard folders and a starter `pom.xml`.
-
-### Method 2: Creating `pom.xml` Manually
-Simply create a file named `pom.xml` in your project root with the standard Maven structure and directories:
-- `src/main/java`
-- `src/main/webapp`
-
----
-
-## 7. Why No Need of Manual Tomcat Installation?
+## 8. Why No Need of Manual Tomcat Installation?
 
 ### The Old / Complicated Way (Manual Tomcat):
-1. Go to Apache website & download `apache-tomcat-10.1.x.tar.gz`.
+1. Download `apache-tomcat-10.1.x.tar.gz`.
 2. Extract it using terminal: `tar -xvf ...` (often fails due to wrong paths or missing filenames).
 3. Set environment variables like `CATALINA_HOME`, `JAVA_HOME`, `PATH`.
 4. Compile your app with Maven to get `campus-student-management.war`.
 5. Manually copy the `.war` file into `apache-tomcat/webapps/`.
 6. Start Tomcat using `./bin/startup.sh`.
-7. Hard to debug if ports conflict or files don't deploy.
 
 ### The Modern Way (Embedded Server Plugin):
 Instead of installing an external server on your operating system, we put the server **inside Maven as a plugin**!
 - Maven downloads and runs the lightweight server directly in memory.
-- No software installation.
+- No separate software to install.
 - No `tar.gz` extraction errors.
 - One single command: `mvn jetty:run`.
 
 ---
 
-## 8. Exact Changes Made to `pom.xml`
+## 9. Embedded Server Configuration in `pom.xml`
 
-### 1. Fixed the File Name
-- The file was accidentally named `pox.xml` (which caused `[ERROR] no POM in this directory`).
-- It was renamed to `pom.xml`.
-
-### 2. Added the Embedded Server Plugin (`jetty-ee10-maven-plugin`)
-We added this block inside `<plugins>` in `pom.xml`:
+We configured the **`jetty-ee10-maven-plugin`** inside `<plugins>` in `pom.xml`:
 
 ```xml
 <plugin>
@@ -248,17 +281,18 @@ We added this block inside `<plugins>` in `pom.xml`:
 
 ### Why Jetty EE10?
 - Our code uses **`jakarta.servlet-api` version 6.0.0** (Jakarta EE 10).
-- Older plugins (like the old Tomcat 7 plugin) only support the legacy `javax.servlet` (Java EE).
+- Older plugins (like the old Tomcat 7 plugin) only support legacy `javax.servlet`.
 - `jetty-ee10-maven-plugin:12.0.14` fully supports modern `jakarta.servlet` (Servlet 6.0) out of the box with zero external setup.
 
 ---
 
-## 9. Summary Cheatsheet
+## 10. Summary Cheatsheet
 
 | Task | Command |
 | :--- | :--- |
 | **Run Web Application** | `mvn jetty:run` |
 | **Compile & Build WAR** | `mvn clean package` |
 | **Stop Server** | `Ctrl + C` |
+| **Free Port 8080 (if stuck)** | `fuser -k 8080/tcp` |
 | **View Form in Browser** | `http://localhost:8080/student.html` |
 | **View Student List in Browser** | `http://localhost:8080/students` |
