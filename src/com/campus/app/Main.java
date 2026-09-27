@@ -35,7 +35,7 @@ public class Main {
             marks[i] = sc.nextInt();
         }
 
-        System.out.println("Enter the scholarship percentage: ");
+        System.out.println("Enter   the scholarship percentage: ");
         double scholarshipPercentage = sc.nextDouble();
         
 
@@ -50,28 +50,6 @@ public class Main {
         StudentOperations operations = (StudentOperations) student;
         operations.generateReport();
         System.out.println("Is Eligible for Scholarship: " + operations.isEligibleForScholarship());
-
-        // Member Inner Classes
-        Student.StudentCard card = student.new StudentCard();
-        card.displayStudentCard();
-
-        Student.ExamResult examResult = student.new ExamResult();
-        examResult.displayExamResult();
-
-        // Anonymous Inner Class implementing StudentOperations (Special Quota)
-        StudentOperations specialOperations = new StudentOperations() {
-            @Override
-            public void generateReport() {
-                System.out.println("Special Quota Criteria: Minimum 75% average marks");
-            }
-
-            @Override
-            public boolean isEligibleForScholarship() {
-                return StudentService.calculateAverageMarks(student) >= 75;
-            }
-        };
-        specialOperations.generateReport();
-        System.out.println("Is Eligible for Scholarship (Special Quota): " + specialOperations.isEligibleForScholarship());
 
         System.out.println("Students Created: " + Student.getTotalStudents());
 

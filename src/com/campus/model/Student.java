@@ -114,22 +114,4 @@ public abstract class Student {
     public static int getTotalStudents() {
         return totalStudents;
     }
-
-    // Inner classes
-    public class StudentCard {
-        public void displayStudentCard() {
-            System.out.println("--- Student Card ---");
-            System.out.println("Student ID: " + studentId);
-            System.out.println("Name: " + name);
-            System.out.println("Department: " + department);
-        }
-    }
-
-    public class ExamResult {
-        
-        public void displayExamResult() {
-            System.out.println("--- Exam Result ---");
-            displayMarks();
-        }
-    }
 }
