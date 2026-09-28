@@ -4,61 +4,51 @@
 
 <head>
 
-    <meta charset="UTF-8">
-
     <title>Add Student</title>
 
 </head>
 
 <body>
 
-    <h1>Campus Student Management</h1>
+<h1>Add Student</h1>
 
-    <h2>Add Student</h2>
+<form method="post" action="students">
 
-    <form
-        method="post"
-        action="students">
+    <label>
+        Name:
+    </label>
 
-        <label>
-            Student Name:
-        </label>
+    <input
+        type="text"
+        name="name"
+        required
+    >
 
-        <br>
+    <br><br>
 
-        <input
-            type="text"
-            name="name"
-            required>
+    <label>
+        Department:
+    </label>
 
-        <br><br>
+    <input
+        type="text"
+        name="department"
+        required
+    >
 
+    <br><br>
 
-        <label>
-            Department:
-        </label>
+    <button type="submit">
+        Add Student
+    </button>
 
-        <br>
+</form>
 
-        <input
-            type="text"
-            name="department"
-            required>
+<br>
 
-        <br><br>
-
-
-        <button type="submit">
-            Add Student
-        </button>
-
-    </form>
-
-    <br>
-
-    <a href="students">
-        View Students
-    </a>
+<a href="students">
+    View Students
+</a>
 
 </body>
 

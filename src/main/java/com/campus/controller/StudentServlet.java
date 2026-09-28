@@ -1,14 +1,14 @@
 package com.campus.controller;
 
 import com.campus.service.StudentService;
-
+import jakarta.servlet.RequestDispatcher;
+import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
 import jakarta.servlet.http.HttpServlet;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 
 import java.io.IOException;
-import java.io.PrintWriter;
 
 @WebServlet("/students")
 public class StudentServlet extends HttpServlet {
@@ -21,60 +21,15 @@ public class StudentServlet extends HttpServlet {
     protected void doGet(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws IOException {
+            throws IOException,
+            ServletException {
 
-        response.setContentType(
-                "text/html;charset=UTF-8"
-        );
+        var students=studentService.getAllStudents();
 
-        PrintWriter out =
-                response.getWriter();
+        request.setAttribute("students", students);
 
-        out.println("<!DOCTYPE html>");
-
-        out.println("<html>");
-
-        out.println("<head>");
-
-        out.println(
-                "<title>Student Management</title>"
-        );
-
-        out.println("</head>");
-
-        out.println("<body>");
-
-        out.println(
-                "<h1>Campus Student Management System</h1>"
-        );
-
-        out.println("<h2>Student List</h2>");
-
-        out.println("<ul>");
-
-        for (String student :
-                studentService.getAllStudents()) {
-
-            out.println(
-                    "<li>"
-                    + student
-                    + "</li>"
-            );
-        }
-
-        out.println("</ul>");
-
-        out.println("<br>");
-
-        out.println(
-                "<a href='student.html'>"
-                + "Add Student"
-                + "</a>"
-        );
-
-        out.println("</body>");
-
-        out.println("</html>");
+        RequestDispatcher dispatcher=request.getRequestDispatcher("/students.jsp");
+        dispatcher.forward(request, response);
     }
 
     // Handles POST /students
