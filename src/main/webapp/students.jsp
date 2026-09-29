@@ -1,4 +1,10 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+
+<%@ taglib prefix="c"
+           uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
+
 <html>
 
 <head>
@@ -9,25 +15,9 @@
 
 <body>
 
-<h1>Campus Student Management System</h1>
+<h1>Campus Student Management</h1>
 
 <h2>Student List</h2>
-
-<%
-    java.util.List<String> students =
-            (java.util.List<String>)
-                    request.getAttribute("students");
-
-    for (String student : students) {
-%>
-
-    <p>
-        <%= student %>
-    </p>
-
-<%
-    }
-%>
 
 <br>
 
@@ -37,8 +27,70 @@
 
 <br><br>
 
-<a href="session">
-    Test Cookie and Session
+<table border="1" cellpadding="10">
+
+    <tr>
+
+        <th>ID</th>
+
+        <th>Name</th>
+
+        <th>Department</th>
+
+        <th>Age</th>
+
+        <th>Actions</th>
+
+    </tr>
+
+
+    <c:forEach
+            var="student"
+            items="${students}">
+
+        <tr>
+
+            <td>
+                ${student.id}
+            </td>
+
+            <td>
+                ${student.name}
+            </td>
+
+            <td>
+                ${student.department}
+            </td>
+
+            <td>
+                ${student.age}
+            </td>
+
+            <td>
+
+                <a href="students?action=edit&id=${student.id}">
+                    Edit
+                </a>
+
+                &nbsp; | &nbsp;
+
+                <a href="students?action=delete&id=${student.id}"
+                   onclick="return confirm('Delete this student?');">
+                    Delete
+                </a>
+
+            </td>
+
+        </tr>
+
+    </c:forEach>
+
+</table>
+
+<br>
+
+<a href="index.html">
+    Home
 </a>
 
 </body>

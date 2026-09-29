@@ -12,66 +12,55 @@ import java.io.IOException;
 @WebServlet("/session")
 public class SessionServlet extends HttpServlet {
 
-    @Override
-    protected void doGet(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
+        @Override
+        protected void doGet(
+                        HttpServletRequest request,
+                        HttpServletResponse response)
+                        throws IOException {
 
-        response.setContentType("text/html");
+                response.setContentType("text/html");
 
-        // -------------------------
-        // SESSION
-        // -------------------------
+                // -------------------------
+                // SESSION
+                // -------------------------
 
-        HttpSession session =
-                request.getSession();
+                HttpSession session = request.getSession();
 
-        session.setAttribute(
-                "username",
-                "Arun"
-        );
+                session.setAttribute(
+                                "username",
+                                "Arun");
 
-        // -------------------------
-        // COOKIE
-        // -------------------------
+                // -------------------------
+                // COOKIE
+                // -------------------------
 
-        Cookie usernameCookie =
-                new Cookie(
-                        "username",
-                        "Arun"
-                );
+                Cookie usernameCookie = new Cookie(
+                                "username",
+                                "Arun");
 
-        usernameCookie.setMaxAge(
-                60 * 60
-        );
+                usernameCookie.setMaxAge(
+                                60 * 60);
 
-        response.addCookie(
-                usernameCookie
-        );
+                response.addCookie(
+                                usernameCookie);
 
-        // -------------------------
-        // RESPONSE
-        // -------------------------
+                // -------------------------
+                // RESPONSE
+                // -------------------------
 
-        response.getWriter().println(
-                "<h1>Session and Cookie Demo</h1>"
-        );
+                response.getWriter().println(
+                                "<h1>Session and Cookie Demo</h1>");
 
-        response.getWriter().println(
-                "<p>Session username: Arun</p>"
-        );
+                response.getWriter().println(
+                                "<p>Session username: Arun</p>");
 
-        response.getWriter().println(
-                "<p>Cookie username: Arun</p>"
-        );
+                response.getWriter().println(
+                                "<p>Cookie username: Arun</p>");
 
-        response.getWriter().println(
-                "<p>Session created successfully.</p>"
-        );
+                response.getWriter().println(
+                                "<p>Session created successfully.</p>");
 
-        response.getWriter().println(
-                "<br><a href='students'>Back to Students</a>"
-        );
-    }
+                response.getWriter().println(
+                                "<br><a href='students'>Back to Students</a>");
+        }
 }

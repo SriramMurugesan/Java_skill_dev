@@ -1,21 +1,31 @@
+<%@ page contentType="text/html;charset=UTF-8" %>
+
 <!DOCTYPE html>
 
 <html>
 
 <head>
-    <title>Add Student</title>
+
+    <title>Edit Student</title>
+
 </head>
 
 <body>
 
-<h1>Add Student</h1>
+<h1>Edit Student</h1>
 
 <form method="post" action="students">
 
     <input
         type="hidden"
         name="action"
-        value="add"
+        value="update"
+    >
+
+    <input
+        type="hidden"
+        name="id"
+        value="${student.id}"
     >
 
     <label>Name:</label>
@@ -23,6 +33,7 @@
     <input
         type="text"
         name="name"
+        value="${student.name}"
         required
     >
 
@@ -33,6 +44,7 @@
     <input
         type="text"
         name="department"
+        value="${student.department}"
         required
     >
 
@@ -43,13 +55,14 @@
     <input
         type="number"
         name="age"
+        value="${student.age}"
         required
     >
 
     <br><br>
 
     <button type="submit">
-        Add Student
+        Update Student
     </button>
 
 </form>
@@ -57,7 +70,7 @@
 <br>
 
 <a href="students">
-    View Students
+    Back to Students
 </a>
 
 </body>
