@@ -1,14 +1,14 @@
 package com.campus.service;
 
-import com.campus.dao.StudentDAO;
+import com.campus.dao.StudentJPADAO;
 import com.campus.model.Student;
 
 import java.util.List;
 
 public class StudentService {
 
-    private final StudentDAO studentDAO =
-            new StudentDAO();
+    private final StudentJPADAO studentDAO =
+            new StudentJPADAO();
 
 
     public List<Student> getAllStudents() {
