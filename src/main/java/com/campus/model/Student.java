@@ -4,7 +4,6 @@ import jakarta.persistence.*;
 
 @Entity
 @Table(name = "students")
-
 public class Student {
 
     @Id
@@ -13,33 +12,19 @@ public class Student {
 
     private String name;
 
-    private String department;
-
     private int age;
+
+    @ManyToOne
+    @JoinColumn(name = "department_id")
+    private Department department;
 
     public Student() {
     }
 
-    public Student(
-            int id,
-            String name,
-            String department,
-            int age) {
-
-        this.id = id;
+    public Student(String name, int age, Department department) {
         this.name = name;
-        this.department = department;
         this.age = age;
-    }
-
-    public Student(
-            String name,
-            String department,
-            int age) {
-
-        this.name = name;
         this.department = department;
-        this.age = age;
     }
 
     public int getId() {
@@ -58,19 +43,19 @@ public class Student {
         this.name = name;
     }
 
-    public String getDepartment() {
-        return department;
-    }
-
-    public void setDepartment(String department) {
-        this.department = department;
-    }
-
     public int getAge() {
         return age;
     }
 
     public void setAge(int age) {
         this.age = age;
+    }
+
+    public Department getDepartment() {
+        return department;
+    }
+
+    public void setDepartment(Department department) {
+        this.department = department;
     }
 }

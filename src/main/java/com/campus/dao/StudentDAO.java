@@ -1,5 +1,6 @@
 package com.campus.dao;
 
+import com.campus.model.Department;
 import com.campus.model.Student;
 import com.campus.util.DBConnection;
 
@@ -42,8 +43,10 @@ public class StudentDAO {
                         resultSet.getString("name")
                 );
 
+                String deptName =
+                        resultSet.getString("department");
                 student.setDepartment(
-                        resultSet.getString("department")
+                        deptName != null ? new Department(deptName) : null
                 );
 
                 student.setAge(
@@ -85,7 +88,7 @@ public class StudentDAO {
 
             statement.setString(
                     2,
-                    student.getDepartment()
+                    student.getDepartment() != null ? student.getDepartment().getName() : null
             );
 
             statement.setInt(
@@ -136,8 +139,10 @@ public class StudentDAO {
                             resultSet.getString("name")
                     );
 
+                    String deptName =
+                            resultSet.getString("department");
                     student.setDepartment(
-                            resultSet.getString("department")
+                            deptName != null ? new Department(deptName) : null
                     );
 
                     student.setAge(
@@ -180,7 +185,7 @@ public class StudentDAO {
 
             statement.setString(
                     2,
-                    student.getDepartment()
+                    student.getDepartment() != null ? student.getDepartment().getName() : null
             );
 
             statement.setInt(

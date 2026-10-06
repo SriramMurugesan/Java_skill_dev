@@ -4,27 +4,32 @@ import com.campus.model.Student;
 import com.campus.util.JPAUtil;
 
 import jakarta.persistence.EntityManager;
+import jakarta.persistence.EntityTransaction;
+
 import java.util.List;
 
 public class StudentJPADAO {
-    //add method to add a student(persist)
+
     public void addStudent(Student student) {
 
         EntityManager em =
                 JPAUtil.getEntityManager();
 
+        EntityTransaction transaction =
+                em.getTransaction();
+
         try {
 
-            em.getTransaction().begin();
+            transaction.begin();
 
             em.persist(student);
 
-            em.getTransaction().commit();
+            transaction.commit();
 
         } catch (Exception e) {
 
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
+            if (transaction.isActive()) {
+                transaction.rollback();
             }
 
             e.printStackTrace();
@@ -35,7 +40,26 @@ public class StudentJPADAO {
         }
     }
 
-    //method to get student by id(find)
+
+    public List<Student> getAllStudents() {
+
+        EntityManager em =
+                JPAUtil.getEntityManager();
+
+        try {
+
+            return em.createQuery(
+                    "SELECT s FROM Student s ORDER BY s.id",
+                    Student.class
+            ).getResultList();
+
+        } finally {
+
+            em.close();
+        }
+    }
+
+
     public Student getStudentById(int id) {
 
         EntityManager em =
@@ -54,8 +78,80 @@ public class StudentJPADAO {
         }
     }
 
-    //method to get all students(createQuery)
-    public List<Student> getAllStudents() {
+
+    public void updateStudent(Student student) {
+
+        EntityManager em =
+                JPAUtil.getEntityManager();
+
+        EntityTransaction transaction =
+                em.getTransaction();
+
+        try {
+
+            transaction.begin();
+
+            em.merge(student);
+
+            transaction.commit();
+
+        } catch (Exception e) {
+
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+
+            e.printStackTrace();
+
+        } finally {
+
+            em.close();
+        }
+    }
+
+
+    public void deleteStudent(int id) {
+
+        EntityManager em =
+                JPAUtil.getEntityManager();
+
+        EntityTransaction transaction =
+                em.getTransaction();
+
+        try {
+
+            transaction.begin();
+
+            Student student =
+                    em.find(
+                            Student.class,
+                            id
+                    );
+
+            if (student != null) {
+
+                em.remove(student);
+            }
+
+            transaction.commit();
+
+        } catch (Exception e) {
+
+            if (transaction.isActive()) {
+                transaction.rollback();
+            }
+
+            e.printStackTrace();
+
+        } finally {
+
+            em.close();
+        }
+    }
+
+
+    public List<Student> findStudentsByAge(
+            int age) {
 
         EntityManager em =
                 JPAUtil.getEntityManager();
@@ -63,13 +159,12 @@ public class StudentJPADAO {
         try {
 
             return em.createQuery(
-                    //HQL query to get all students
-                    //HQL-"Hypertext Query Language"
-                    //HQL is object oriented query language 
-                    //s is alias name of Student class
-                    "SELECT s FROM Student s",
+                    "SELECT s FROM Student s " +
+                    "WHERE s.age = :age",
                     Student.class
-            ).getResultList();
+            )
+            .setParameter("age", age)
+            .getResultList();
 
         } finally {
 
@@ -77,27 +172,25 @@ public class StudentJPADAO {
         }
     }
 
-    //method to update student(merge)
-    public void updateStudent(Student student) {
+
+    public List<Student> findStudentsByDepartment(
+            String departmentName) {
 
         EntityManager em =
                 JPAUtil.getEntityManager();
 
         try {
 
-            em.getTransaction().begin();
-
-            em.merge(student);
-
-            em.getTransaction().commit();
-
-        } catch (Exception e) {
-
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
-
-            e.printStackTrace();
+            return em.createQuery(
+                    "SELECT s FROM Student s " +
+                    "WHERE s.department.name = :dept",
+                    Student.class
+            )
+            .setParameter(
+                    "dept",
+                    departmentName
+            )
+            .getResultList();
 
         } finally {
 
@@ -105,33 +198,45 @@ public class StudentJPADAO {
         }
     }
 
-    //method to delete student(remove)
-    public void deleteStudent(int id) {
+
+    public List<Student> searchByName(
+            String name) {
 
         EntityManager em =
                 JPAUtil.getEntityManager();
 
         try {
 
-            em.getTransaction().begin();
+            return em.createQuery(
+                    "SELECT s FROM Student s " +
+                    "WHERE LOWER(s.name) " +
+                    "LIKE LOWER(:name)",
+                    Student.class
+            )
+            .setParameter(
+                    "name",
+                    "%" + name + "%"
+            )
+            .getResultList();
 
-            Student student =
-                    em.find(Student.class, id);
+        } finally {
 
-            if (student != null) {
+            em.close();
+        }
+    }
 
-                em.remove(student);
-            }
 
-            em.getTransaction().commit();
+    public long getStudentCount() {
 
-        } catch (Exception e) {
+        EntityManager em =
+                JPAUtil.getEntityManager();
 
-            if (em.getTransaction().isActive()) {
-                em.getTransaction().rollback();
-            }
+        try {
 
-            e.printStackTrace();
+            return em.createQuery(
+                    "SELECT COUNT(s) FROM Student s",
+                    Long.class
+            ).getSingleResult();
 
         } finally {
 

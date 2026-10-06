@@ -1,14 +1,12 @@
 package com.campus.controller;
 
+import com.campus.model.Department;
 import com.campus.model.Student;
 import com.campus.service.StudentService;
 
-import jakarta.servlet.RequestDispatcher;
 import jakarta.servlet.ServletException;
 import jakarta.servlet.annotation.WebServlet;
-import jakarta.servlet.http.HttpServlet;
-import jakarta.servlet.http.HttpServletRequest;
-import jakarta.servlet.http.HttpServletResponse;
+import jakarta.servlet.http.*;
 
 import java.io.IOException;
 import java.util.List;
@@ -16,11 +14,15 @@ import java.util.List;
 @WebServlet("/students")
 public class StudentServlet extends HttpServlet {
 
-    private final StudentService studentService =
-            new StudentService();
+    private StudentService service;
 
 
-    // READ
+    @Override
+    public void init() {
+        service = new StudentService();
+    }
+
+
     @Override
     protected void doGet(
             HttpServletRequest request,
@@ -30,43 +32,135 @@ public class StudentServlet extends HttpServlet {
         String action =
                 request.getParameter("action");
 
-        if ("edit".equals(action)) {
 
-            showEditForm(request, response);
+        if (action == null ||
+                action.equals("list")) {
 
-        } else if ("delete".equals(action)) {
+            List<Student> students =
+                    service.getAllStudents();
 
-            deleteStudent(request, response);
+            List<Department> departments =
+                    service.getAllDepartments();
 
-        } else {
+            request.setAttribute(
+                    "students",
+                    students
+            );
 
-            listStudents(request, response);
+            request.setAttribute(
+                    "departments",
+                    departments
+            );
+
+            request.getRequestDispatcher(
+                    "/students.jsp"
+            ).forward(
+                    request,
+                    response
+            );
+
+            return;
+        }
+
+
+        if (action.equals("edit")) {
+
+            int id = Integer.parseInt(
+                    request.getParameter("id")
+            );
+
+            Student student =
+                    service.getStudentById(id);
+
+            List<Department> departments =
+                    service.getAllDepartments();
+
+            request.setAttribute(
+                    "student",
+                    student
+            );
+
+            request.setAttribute(
+                    "departments",
+                    departments
+            );
+
+            request.getRequestDispatcher(
+                    "/edit-student.jsp"
+            ).forward(
+                    request,
+                    response
+            );
+
+            return;
+        }
+
+
+        if (action.equals("delete")) {
+
+            int id = Integer.parseInt(
+                    request.getParameter("id")
+            );
+
+            service.deleteStudent(id);
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/students"
+            );
+
+            return;
+        }
+
+
+        if (action.equals("department")) {
+
+            String department =
+                    request.getParameter(
+                            "department"
+                    );
+
+            List<Student> students =
+                    service.findStudentsByDepartment(
+                            department
+                    );
+
+            List<Department> departments =
+                    service.getAllDepartments();
+
+            request.setAttribute(
+                    "students",
+                    students
+            );
+
+            request.setAttribute(
+                    "departments",
+                    departments
+            );
+
+            request.setAttribute(
+                    "selectedDepartment",
+                    department
+            );
+
+            request.getRequestDispatcher(
+                    "/students.jsp"
+            ).forward(
+                    request,
+                    response
+            );
         }
     }
 
 
-    // CREATE / UPDATE
     @Override
     protected void doPost(
             HttpServletRequest request,
             HttpServletResponse response)
-            throws IOException {
-
-        request.setCharacterEncoding("UTF-8");
+            throws ServletException, IOException {
 
         String action =
                 request.getParameter("action");
-
-        String name =
-                request.getParameter("name");
-
-        String department =
-                request.getParameter("department");
-
-        int age =
-                Integer.parseInt(
-                        request.getParameter("age")
-                );
 
 
         if ("update".equals(action)) {
@@ -76,106 +170,78 @@ public class StudentServlet extends HttpServlet {
                             request.getParameter("id")
                     );
 
-            Student student =
-                    new Student(
-                            id,
-                            name,
-                            department,
-                            age
+            String name =
+                    request.getParameter("name");
+
+            int age =
+                    Integer.parseInt(
+                            request.getParameter("age")
                     );
 
-            studentService.updateStudent(student);
+            int departmentId =
+                    Integer.parseInt(
+                            request.getParameter(
+                                    "departmentId"
+                            )
+                    );
 
-        } else {
+            Department department =
+                    service.getDepartmentById(
+                            departmentId
+                    );
 
             Student student =
                     new Student(
                             name,
-                            department,
-                            age
+                            age,
+                            department
                     );
 
-            studentService.addStudent(student);
+            student.setId(id);
+
+            service.updateStudent(student);
+
+            response.sendRedirect(
+                    request.getContextPath()
+                    + "/students"
+            );
+
+            return;
         }
 
 
-        response.sendRedirect(
-                request.getContextPath()
-                        + "/students"
-        );
-    }
+        String name =
+                request.getParameter("name");
 
-
-    private void listStudents(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
-
-        List<Student> students =
-                studentService.getAllStudents();
-
-        request.setAttribute(
-                "students",
-                students
-        );
-
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                        "/students.jsp"
+        int age =
+                Integer.parseInt(
+                        request.getParameter("age")
                 );
 
-        dispatcher.forward(
-                request,
-                response
-        );
-    }
-
-
-    private void showEditForm(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws ServletException, IOException {
-
-        int id =
+        int departmentId =
                 Integer.parseInt(
-                        request.getParameter("id")
+                        request.getParameter(
+                                "departmentId"
+                        )
+                );
+
+        Department department =
+                service.getDepartmentById(
+                        departmentId
                 );
 
         Student student =
-                studentService.getStudentById(id);
-
-        request.setAttribute(
-                "student",
-                student
-        );
-
-        RequestDispatcher dispatcher =
-                request.getRequestDispatcher(
-                        "/edit-student.jsp"
+                new Student(
+                        name,
+                        age,
+                        department
                 );
 
-        dispatcher.forward(
-                request,
-                response
-        );
-    }
-
-
-    private void deleteStudent(
-            HttpServletRequest request,
-            HttpServletResponse response)
-            throws IOException {
-
-        int id =
-                Integer.parseInt(
-                        request.getParameter("id")
-                );
-
-        studentService.deleteStudent(id);
+        service.addStudent(student);
 
         response.sendRedirect(
                 request.getContextPath()
-                        + "/students"
+                + "/students"
         );
     }
 }

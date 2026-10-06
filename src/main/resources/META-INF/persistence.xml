@@ -12,9 +12,8 @@
             org.hibernate.jpa.HibernatePersistenceProvider
         </provider>
 
-        <class>
-            com.campus.model.Student
-        </class>
+        <class>com.campus.model.Student</class>
+        <class>com.campus.model.Department</class>
 
         <properties>
 

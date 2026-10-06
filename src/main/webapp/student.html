@@ -1,5 +1,4 @@
 <!DOCTYPE html>
-
 <html>
 
 <head>
@@ -10,29 +9,13 @@
 
 <h1>Add Student</h1>
 
-<form method="post" action="students">
-
-    <input
-        type="hidden"
-        name="action"
-        value="add"
-    >
+<form action="students" method="post">
 
     <label>Name:</label>
 
     <input
         type="text"
         name="name"
-        required
-    >
-
-    <br><br>
-
-    <label>Department:</label>
-
-    <input
-        type="text"
-        name="department"
         required
     >
 
@@ -48,6 +31,16 @@
 
     <br><br>
 
+    <label>Department ID:</label>
+
+    <input
+        type="number"
+        name="departmentId"
+        required
+    >
+
+    <br><br>
+
     <button type="submit">
         Add Student
     </button>
@@ -57,7 +50,7 @@
 <br>
 
 <a href="students">
-    View Students
+    Back to Students
 </a>
 
 </body>

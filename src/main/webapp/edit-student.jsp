@@ -1,20 +1,21 @@
 <%@ page contentType="text/html;charset=UTF-8" %>
 
+<%@ taglib prefix="c"
+           uri="jakarta.tags.core" %>
+
 <!DOCTYPE html>
 
 <html>
 
 <head>
-
     <title>Edit Student</title>
-
 </head>
 
 <body>
 
 <h1>Edit Student</h1>
 
-<form method="post" action="students">
+<form action="students" method="post">
 
     <input
         type="hidden"
@@ -39,17 +40,6 @@
 
     <br><br>
 
-    <label>Department:</label>
-
-    <input
-        type="text"
-        name="department"
-        value="${student.department}"
-        required
-    >
-
-    <br><br>
-
     <label>Age:</label>
 
     <input
@@ -58,6 +48,29 @@
         value="${student.age}"
         required
     >
+
+    <br><br>
+
+    <label>Department:</label>
+
+    <select name="departmentId" required>
+
+        <c:forEach
+            var="department"
+            items="${departments}">
+
+            <option
+                value="${department.id}"
+                ${department.id == student.department.id
+                    ? 'selected' : ''}>
+
+                ${department.name}
+
+            </option>
+
+        </c:forEach>
+
+    </select>
 
     <br><br>
 
